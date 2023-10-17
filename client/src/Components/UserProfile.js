@@ -1,15 +1,29 @@
 import { Container, Grid, GridItem, Input } from "@chakra-ui/react";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { MyContext } from "../context/context";
+import { useLocation } from "react-router-dom";
 
 const UserProfile = () => {
-  const { userProfile, setUserProfile } = useContext(MyContext);
+  const [addFlag, setAddFlag] = useState(true);
+
+  const { userProfile, setUserProfile, setAccordianItems } =
+    useContext(MyContext);
 
   const gridItemStyle = {
     margin: "7px",
     backgroundColor: "#D9D9D9",
     padding: "10px",
   };
+
+  const location = useLocation();
+
+  const { pathname } = location;
+
+  useEffect(() => {
+    if (pathname?.includes("update")) {
+      setAddFlag(false);
+    }
+  }, []);
 
   const handleInputChange = (field, value) => {
     // Create a new object with the updated value and set the entire state
@@ -59,6 +73,18 @@ const UserProfile = () => {
             placeholder="Email"
           />
         </GridItem>
+        {addFlag ? (
+          <GridItem style={gridItemStyle}>
+            <Input
+              onChange={(e) => {
+                handleInputChange("password", e.target.value);
+              }}
+              value={userProfile?.password}
+              placeholder="Password"
+            />
+          </GridItem>
+        ) : null}
+
         <GridItem style={gridItemStyle}>
           <input
             type="number"

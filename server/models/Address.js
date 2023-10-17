@@ -1,10 +1,19 @@
 const mongoose = require("mongoose");
 
 const addressSchema = new mongoose.Schema({
-  street: String,
-  city: String,
-  zipCode: String,
-  state: String,
+  street: {
+    type: String,
+  },
+  city: {
+    type: String,
+  },
+  zipCode: {
+    type: Number,
+    maxLength: 6,
+  },
+  state: {
+    type: String,
+  },
   user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",

@@ -1,81 +1,71 @@
-import { Button, Container, Tab, TabList, Tabs } from "@chakra-ui/react";
 import { useContext, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import UserAddress from "../Components/UserAddress";
-import UserProfile from "../Components/UserProfile";
-import { MyContext } from "../context/context";
 import axios from "../axios";
+import { useNavigate, useParams } from "react-router-dom";
+import { MyContext } from "../context/context";
+import { Button, Container, Tab, TabList, Tabs } from "@chakra-ui/react";
+import UserProfile from "../Components/UserProfile";
+import UserAddress from "../Components/UserAddress";
 
-const AddUserInfo = () => {
+const UpdateUserInfo = () => {
   const [tabFlag, setTabFlag] = useState(true);
   const {
-    userProfile,
-    accordionItems,
-    isLogin,
     setUserProfile,
+    isLogin,
     setAccordianItems,
-    addUserButtonFlag,
-    setAddUserButtonFlag,
+    accordionItems,
+    userProfile,
   } = useContext(MyContext);
-  const [createUserData, setCreateUserData] = useState();
 
-  useEffect(() => {
-    setCreateUserData({
-      ...userProfile,
-      addresses: accordionItems,
-    });
-  }, [accordionItems, userProfile]);
+  const { userId } = useParams();
 
   const navigate = useNavigate();
 
-  // handle submit
-  const handleSubmit = async () => {
-    try {
-      // hit the create user api
-      const data = await axios.post("/user", createUserData, {
-        withCredentials: true,
-      });
-      setUserProfile({
-        firstName: "",
-        lastName: "",
-        email: "",
-        password: "",
-        phoneNumber: "",
-      });
+  const fetchUserData = async () => {
+    const { data } = await axios.get(`/user/${userId}`, {
+      withCredentials: true,
+    });
 
-      setAccordianItems([
-        {
-          title: "Accordion 1",
-          street: "",
-          city: "",
-          state: "",
-          zipCode: "",
-        },
-      ]);
-      navigate("/home");
-    } catch (error) {
-      console.log(error);
-    }
+    setUserProfile((prev) => {
+      return { ...prev, ...data?.user };
+    });
+
+    setAccordianItems(data?.addresses);
   };
 
   useEffect(() => {
     if (!isLogin) {
       navigate("/login");
     }
+  }, [isLogin]);
 
-    if (addUserButtonFlag) {
-      setAccordianItems([]);
-      setUserProfile({
-        firstName: "",
-        lastName: "",
-        email: "",
-        password: "",
-        phoneNumber: "",
+  useEffect(() => {
+    fetchUserData();
+  }, []);
+
+  // handle submit
+  const handleSubmit = async () => {
+    // when submitted just update the user profile addresses are managed in the addresses tab
+    console.log(userProfile, "userProfile");
+
+    const updatedBody = {
+      firstName: userProfile?.firstName,
+      lastName: userProfile?.lastName,
+      email: userProfile?.email,
+      phoneNumber: userProfile?.phoneNumber,
+    };
+
+    try {
+      await axios.put(`/user/${userId}`, updatedBody, {
+        withCredentials: true,
       });
 
-      setAddUserButtonFlag(false);
+      navigate("/home");
+
+      console.log("updated success");
+    } catch (error) {
+      console.log(error);
     }
-  }, [isLogin]);
+  };
 
   return (
     <Container h={"80vh"} p={"15px"}>
@@ -114,7 +104,7 @@ const AddUserInfo = () => {
       </Container>
 
       {/* conditional rendering according to tab */}
-      {tabFlag ? <UserProfile /> : <UserAddress />}
+      {tabFlag ? <UserProfile /> : <UserAddress userId={userId} />}
 
       <Container p={"20px"} display={"flex"} flexDir={"row-reverse"}>
         <Button
@@ -130,4 +120,4 @@ const AddUserInfo = () => {
   );
 };
 
-export default AddUserInfo;
+export default UpdateUserInfo;

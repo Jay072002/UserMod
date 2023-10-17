@@ -14,8 +14,9 @@ import {
 import { useContext, useEffect, useState } from "react";
 import { MyContext } from "../context/context";
 import { useLocation } from "react-router-dom";
+import axios from "../axios";
 
-const UserAddress = () => {
+const UserAddress = ({ userId }) => {
   const gridItemStyle = {
     margin: "7px",
     backgroundColor: "#D9D9D9",
@@ -45,10 +46,8 @@ const UserAddress = () => {
     }
   };
 
-  // update the accordian which matches the title as title is unique
   const handleInputChange = (field, item, value) => {
     setAccordianItems((prev) => {
-      // Find the accordion item by matching the title
       const updatedItems = prev.map((elem) => {
         if (elem.title === item.title) {
           // Update the specified field for the matching item
@@ -61,12 +60,12 @@ const UserAddress = () => {
     });
   };
 
-  const addAccordian = () => {
+  const addAccordian = async () => {
     setAccordianItems((prev) => {
       return [
         ...prev,
         {
-          title: `Accordian ${prev.length + 1}`,
+          title: `Accordian ${prev?.length + 1}`,
           street: "",
           city: "",
           state: "",
@@ -74,12 +73,65 @@ const UserAddress = () => {
         },
       ];
     });
+
+    // if userId then we can update the address
+    if (userId) {
+      await axios.post(
+        `/address/${userId}`,
+        {
+          street: "",
+          city: "",
+          state: "",
+          zipCode: "",
+        },
+        { withCredentials: true }
+      );
+    }
+  };
+
+  const handleUpdate = async (item) => {
+    try {
+      // {title: 'Accordian 2', street: '', city: '', state: 'afsa', zipCode: ''}
+      const { title, ...data } = item;
+
+      console.log(item, "itemm");
+
+      await axios.put(`/address/${item?._id}`, data, { withCredentials: true });
+      console.log("update success");
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleDelete = async (item) => {
+    try {
+      console.log(item, "itennnn");
+      if (item?._id) {
+        await axios.delete(`/address/${item?._id}`, { withCredentials: true });
+        const updatedAccordionItems = accordionItems.filter(
+          (accItem) => accItem._id !== item?._id
+        );
+
+        setAccordianItems(updatedAccordionItems);
+      } else {
+        // if add in the update section andnot created any address as such in db then just remove it from the accordianitems
+        const updatedAccordianItem = accordionItems?.filter((elem) => {
+          return item.title != elem?.title;
+        });
+
+        setAccordianItems(updatedAccordianItem);
+      }
+
+      console.log(accordionItems, "acccc");
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
     <Container p={"30px"} w={"70vw"} mx={"auto"} border={"1px solid black"}>
       <Accordion width={"70vw"} allowToggle>
-        {accordionItems.map((item, index) => (
+        {accordionItems?.map((item, index) => (
           <AccordionItem key={index}>
             <h2>
               <AccordionButton
@@ -90,7 +142,7 @@ const UserAddress = () => {
                 onClick={() => toggleAccordionItem(index)}
               >
                 <Box as="span" flex="1" textAlign="left">
-                  {item.title}
+                  {`Accordian ${index + 1}`}
                 </Box>
                 <AccordionIcon />
               </AccordionButton>
@@ -142,9 +194,31 @@ const UserAddress = () => {
                 </GridItem>
               </Grid>
               {/* update option should only appear if any of the value of this item changes */}
-              {!addFlag ? (
-                <Container p={"20px"} w={"10vw"} mx={"auto"} cursor={"pointer"}>
-                  <Button p={"5px 14px"}>Update</Button>
+              {!addFlag || pathname.includes("add") ? (
+                <Container
+                  p={"20px"}
+                  w={"10vw"}
+                  mx={"auto"}
+                  cursor={"pointer"}
+                  display={"flex"}
+                  gap={"5px"}
+                >
+                  {item?._id ? (
+                    <Button
+                      cursor={"pointer"}
+                      p={"5px 14px"}
+                      onClick={() => handleUpdate(item)}
+                    >
+                      Update
+                    </Button>
+                  ) : null}
+                  <Button
+                    cursor={"pointer"}
+                    p={"5px 14px"}
+                    onClick={() => handleDelete(item)}
+                  >
+                    Delete
+                  </Button>
                 </Container>
               ) : null}
             </AccordionPanel>

@@ -4,26 +4,42 @@ import React, { createContext, useState } from "react";
 export const MyContext = createContext();
 
 export const MyContextProvider = ({ children }) => {
-  const [userProfile, setUserProfile] = useState({
+  const [loggedInUser, setLoggedInUser] = useState({
     firstName: "",
     lastName: "",
     email: "",
     phoneNumber: "",
+    isAdmin: "",
   });
 
-  const [accordionItems, setAccordianItems] = useState([
-    {
-      title: "Accordion 1",
-      street: "",
-      city: "",
-      state: "",
-      zipCode: "",
-    },
-  ]);
+  const [userProfile, setUserProfile] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    password: "",
+    phoneNumber: "",
+  });
+
+  const [accordionItems, setAccordianItems] = useState([]);
+
+  const [isLogin, setIsLogin] = useState(false);
+
+  const [addUserButtonFlag, setAddUserButtonFlag] = useState(false);
 
   return (
     <MyContext.Provider
-      value={{ userProfile, setUserProfile, accordionItems, setAccordianItems }}
+      value={{
+        userProfile,
+        setUserProfile,
+        accordionItems,
+        setAccordianItems,
+        isLogin,
+        setIsLogin,
+        loggedInUser,
+        setLoggedInUser,
+        addUserButtonFlag,
+        setAddUserButtonFlag,
+      }}
     >
       {children}
     </MyContext.Provider>

@@ -30,7 +30,8 @@ const updateAddress = async (req, res) => {
   try {
     const { addressId } = req.params;
     const updatedAddress = req.body;
-
+    console.log(addressId);
+    console.log(updateAddress);
     const address = await Address.findByIdAndUpdate(addressId, updatedAddress, {
       new: true,
     });
@@ -42,7 +43,24 @@ const updateAddress = async (req, res) => {
   }
 };
 
+const deleteAddress = async (req, res) => {
+  try {
+    const { addressId } = req.params;
+
+    console.log(addressId);
+
+    await Address.deleteOne({ _id: addressId });
+
+    console.log(addressId);
+    res.status(200).json({ message: "Address deleted successfully" });
+  } catch (error) {
+    console.error("Error Deleting address:", error);
+    res.status(500).json({ error: "Could not Delete the address" });
+  }
+};
+
 module.exports = {
   addAddress,
   updateAddress,
+  deleteAddress,
 };
