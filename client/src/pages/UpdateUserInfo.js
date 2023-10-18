@@ -9,13 +9,8 @@ import toast from "react-hot-toast";
 
 const UpdateUserInfo = () => {
   const [tabFlag, setTabFlag] = useState(true);
-  const {
-    setUserProfile,
-    isLogin,
-    setAccordianItems,
-    accordionItems,
-    userProfile,
-  } = useContext(MyContext);
+  const { setUserProfile, isLogin, setAccordianItems, userProfile, isDark } =
+    useContext(MyContext);
 
   const { userId } = useParams();
 
@@ -111,6 +106,12 @@ const UpdateUserInfo = () => {
           p={"4px 18px"}
           cursor={"pointer"}
           mr={"163px"}
+          _hover={{ bg: isDark ? "black" : "grey", transition: "0.2s" }}
+          color={isDark ? "white" : "black"}
+          fontWeight={"bolder"}
+          bg="transparent"
+          borderRadius={"10px"}
+          fontSize={"15px"}
         >
           submit
         </Button>

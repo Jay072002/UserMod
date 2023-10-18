@@ -26,6 +26,8 @@ export const MyContextProvider = ({ children }) => {
 
   const [addUserButtonFlag, setAddUserButtonFlag] = useState(false);
 
+  const [isDark, setIsDark] = useState(false);
+
   return (
     <MyContext.Provider
       value={{
@@ -39,6 +41,8 @@ export const MyContextProvider = ({ children }) => {
         setLoggedInUser,
         addUserButtonFlag,
         setAddUserButtonFlag,
+        isDark,
+        setIsDark,
       }}
     >
       {children}

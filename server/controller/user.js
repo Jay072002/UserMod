@@ -60,7 +60,7 @@ const getUsers = async (req, res) => {
 // Update user information (user only)
 const updateUser = async (req, res) => {
   try {
-    const userId = req.params.userId;
+    const userId = req.params?.userId;
     const data = req.body;
 
     const updatedUser = await User.findByIdAndUpdate(userId, data, {

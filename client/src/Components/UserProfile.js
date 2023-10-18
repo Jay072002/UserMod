@@ -6,12 +6,12 @@ import { useLocation } from "react-router-dom";
 const UserProfile = () => {
   const [addFlag, setAddFlag] = useState(true);
 
-  const { userProfile, setUserProfile, setAccordianItems } =
+  const { userProfile, setUserProfile, setAccordianItems, isDark } =
     useContext(MyContext);
 
   const gridItemStyle = {
     margin: "7px",
-    backgroundColor: "#D9D9D9",
+    backgroundColor: isDark ? "#EFEFEF" : "#D9D9D9",
     padding: "10px",
   };
 
@@ -39,6 +39,7 @@ const UserProfile = () => {
       justifyContent={"center"}
       alignItems={"center"}
       mt={"30px"}
+      border={isDark ? "1px solid white" : "1px solid black"}
     >
       <Grid
         w={"70vw"}
@@ -48,6 +49,7 @@ const UserProfile = () => {
       >
         <GridItem style={gridItemStyle}>
           <Input
+            p={"7px"}
             onChange={(e) => {
               handleInputChange("firstName", e.target.value);
             }}
@@ -57,6 +59,7 @@ const UserProfile = () => {
         </GridItem>
         <GridItem style={gridItemStyle}>
           <Input
+            p={"7px"}
             onChange={(e) => {
               handleInputChange("lastName", e.target.value);
             }}
@@ -66,6 +69,7 @@ const UserProfile = () => {
         </GridItem>
         <GridItem style={gridItemStyle}>
           <Input
+            p={"7px"}
             onChange={(e) => {
               handleInputChange("email", e.target.value);
             }}
@@ -76,6 +80,7 @@ const UserProfile = () => {
         {addFlag ? (
           <GridItem style={gridItemStyle}>
             <Input
+              p={"7px"}
               onChange={(e) => {
                 handleInputChange("password", e.target.value);
               }}
@@ -87,6 +92,7 @@ const UserProfile = () => {
 
         <GridItem style={gridItemStyle}>
           <input
+            style={{ padding: "7px" }}
             type="number"
             maxLength="10"
             onChange={(e) => {

@@ -17,6 +17,7 @@ const AddUserInfo = () => {
     setAccordianItems,
     addUserButtonFlag,
     setAddUserButtonFlag,
+    isDark,
   } = useContext(MyContext);
   const [createUserData, setCreateUserData] = useState();
 
@@ -93,6 +94,8 @@ const AddUserInfo = () => {
               onClick={() => {
                 setTabFlag(true);
               }}
+              color="black"
+              fontWeight={"bold"}
               style={{
                 background: tabFlag ? null : "none", // If tabFlag is true, set the background to none
               }}
@@ -108,6 +111,8 @@ const AddUserInfo = () => {
               style={{
                 background: tabFlag ? "none" : null, // If tabFlag is true, set the background to none
               }}
+              color="black"
+              fontWeight={"bold"}
             >
               {" "}
               Addresses
@@ -125,7 +130,12 @@ const AddUserInfo = () => {
           p={"4px 18px"}
           cursor={"pointer"}
           mr={"163px"}
-          _hover={{ bg: "teal", transition: "0.2s" }}
+          _hover={{ bg: isDark ? "black" : "grey", transition: "0.2s" }}
+          color={isDark ? "white" : "black"}
+          fontWeight={"bolder"}
+          bg="transparent"
+          borderRadius={"10px"}
+          fontSize={"15px"}
         >
           submit
         </Button>

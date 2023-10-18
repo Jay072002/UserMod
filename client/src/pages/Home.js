@@ -10,7 +10,8 @@ import { AiFillDelete } from "react-icons/ai";
 
 const Home = () => {
   const cellPadding = "10px"; // Adjust the padding value as needed\
-  const { isLogin, loggedInUser, setAddUserButtonFlag } = useContext(MyContext);
+  const { isLogin, loggedInUser, setAddUserButtonFlag, isDark } =
+    useContext(MyContext);
 
   const [users, setUsers] = useState([]);
 
@@ -84,23 +85,37 @@ const Home = () => {
         >
           <Table
             w={"70vw"}
-            border={"1px solid black"}
+            border={isDark ? "1px solid white" : "1px solid black"}
             variant="striped"
             colorScheme="teal"
             borderWidth="2px"
+            color={isDark ? "white" : "black"}
+            fontWeight={"bold"}
           >
             <Thead>
               <Tr>
-                <Th borderRight="1px solid black" padding={cellPadding}>
+                <Th
+                  borderRight={isDark ? "1px solid white" : "1px solid black"}
+                  padding={cellPadding}
+                >
                   Sr.No
                 </Th>
-                <Th borderRight="1px solid black" padding={cellPadding}>
+                <Th
+                  borderRight={isDark ? "1px solid white" : "1px solid black"}
+                  padding={cellPadding}
+                >
                   Name
                 </Th>
-                <Th borderRight="1px solid black" padding={cellPadding}>
+                <Th
+                  borderRight={isDark ? "1px solid white" : "1px solid black"}
+                  padding={cellPadding}
+                >
                   Email
                 </Th>
-                <Th borderRight="1px solid black" padding={cellPadding}>
+                <Th
+                  borderRight={isDark ? "1px solid white" : "1px solid black"}
+                  padding={cellPadding}
+                >
                   Phone Number
                 </Th>
                 <Th>Action</Th>
@@ -111,28 +126,36 @@ const Home = () => {
                 return (
                   <Tr key={item?._id}>
                     <Td
-                      borderRight="1px solid black"
+                      borderRight={
+                        isDark ? "1px solid white" : "1px solid black"
+                      }
                       padding={cellPadding}
                       textAlign={"center"}
                     >
                       {index + 1}
                     </Td>
                     <Td
-                      borderRight="1px solid black"
+                      borderRight={
+                        isDark ? "1px solid white" : "1px solid black"
+                      }
                       padding={cellPadding}
                       textAlign={"center"}
                     >
                       {item?.firstName + " " + item?.lastName || "-"}
                     </Td>
                     <Td
-                      borderRight="1px solid black"
+                      borderRight={
+                        isDark ? "1px solid white" : "1px solid black"
+                      }
                       padding={cellPadding}
                       textAlign={"center"}
                     >
                       {item?.email || "-"}
                     </Td>
                     <Td
-                      borderRight="1px solid black"
+                      borderRight={
+                        isDark ? "1px solid white" : "1px solid black"
+                      }
                       padding={cellPadding}
                       textAlign={"center"}
                     >

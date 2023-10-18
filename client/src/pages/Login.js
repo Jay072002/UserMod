@@ -21,7 +21,8 @@ const Login = () => {
   };
 
   const navigate = useNavigate();
-  const { isLogin, setIsLogin, setLoggedInUser } = useContext(MyContext);
+  const { isLogin, setIsLogin, setLoggedInUser, isDark } =
+    useContext(MyContext);
 
   const handleSubmit = async () => {
     try {
@@ -50,7 +51,7 @@ const Login = () => {
       alignItems={"center"}
     >
       <Container
-        border={"1px solid black"}
+        border={isDark ? "1px solid white" : "1px solid black"}
         display={"flex"}
         flexDirection={"column"}
         justifyContent={"center"}
@@ -79,8 +80,12 @@ const Login = () => {
           p={"5px 14px"}
           mt={"10px"}
           onClick={handleSubmit}
-          _hover={{ bg: "teal", transition: "0.2s" }}
+          _hover={{ bg: isDark ? "black" : "grey", transition: "0.2s" }}
+          borderRadius={"10px"}
           ref={buttonRef}
+          fontWeight={"bold"}
+          color={isDark ? "white" : "black"}
+          bg="transparent"
         >
           submit
         </Button>

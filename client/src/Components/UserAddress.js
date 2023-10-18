@@ -20,13 +20,13 @@ import toast from "react-hot-toast";
 import { AiFillDelete } from "react-icons/ai";
 
 const UserAddress = ({ userId }) => {
+  const { accordionItems, setAccordianItems, isDark } = useContext(MyContext);
   const gridItemStyle = {
     margin: "7px",
-    backgroundColor: "#D9D9D9",
+    backgroundColor: isDark ? "#EFEFEF" : "#D9D9D9",
     padding: "10px",
   };
 
-  const { accordionItems, setAccordianItems } = useContext(MyContext);
   const [openItems, setOpenItems] = useState([]);
   const [addFlag, setAddFlag] = useState(true);
   const [add, setAdd] = useState(true);
@@ -162,7 +162,7 @@ const UserAddress = ({ userId }) => {
   };
 
   return (
-    <Container p={"30px"} w={"70vw"} mx={"auto"} border={"1px solid black"}>
+    <Container p={"30px"} w={"73vw"} mx={"auto"} border={"1px solid black"}>
       <Accordion width={"70vw"} allowToggle>
         {accordionItems?.map((item, index) => (
           <Container
@@ -180,7 +180,14 @@ const UserAddress = ({ userId }) => {
                   borderRadius={"100px"}
                   onClick={() => toggleAccordionItem(index)}
                 >
-                  <Box as="span" flex="1" textAlign="left">
+                  <Box
+                    as="span"
+                    flex="1"
+                    textAlign="left"
+                    fontWeight={"bolder"}
+                    color={isDark ? "white" : "black"}
+                    fontSize={"15px"}
+                  >
                     {`Accordian`}
                   </Box>
                   <AccordionIcon />
@@ -195,6 +202,7 @@ const UserAddress = ({ userId }) => {
                 >
                   <GridItem style={gridItemStyle}>
                     <Input
+                      p={"7px"}
                       onChange={(e) => {
                         handleInputChange("street", item, e.target.value);
                       }}
@@ -204,6 +212,7 @@ const UserAddress = ({ userId }) => {
                   </GridItem>
                   <GridItem style={gridItemStyle}>
                     <Input
+                      p={"7px"}
                       onChange={(e) => {
                         handleInputChange("city", item, e.target.value);
                       }}
@@ -213,6 +222,7 @@ const UserAddress = ({ userId }) => {
                   </GridItem>
                   <GridItem style={gridItemStyle}>
                     <Input
+                      p={"7px"}
                       onChange={(e) => {
                         handleInputChange("state", item, e.target.value);
                       }}
@@ -222,6 +232,7 @@ const UserAddress = ({ userId }) => {
                   </GridItem>
                   <GridItem style={gridItemStyle}>
                     <input
+                      style={{ padding: "7px" }}
                       type="number"
                       maxLength="10"
                       onChange={(e) => {
@@ -267,7 +278,7 @@ const UserAddress = ({ userId }) => {
               size={"20px"}
               cursor={"pointer"}
               fill="black"
-              style={{ transition: "fill 0.4s" }}
+              style={{ transition: "fill 0.4s", marginRight: "17px" }}
               className="AiFillDelete"
               onClick={() => handleDelete(item)}
             />
@@ -282,6 +293,9 @@ const UserAddress = ({ userId }) => {
           border={"none"}
           fontSize={"16px"}
           onClick={addAccordian}
+          bg={"transparent"}
+          color={isDark ? "white" : "dark"}
+          fontWeight={"bolder"}
         >
           Add +
         </Button>
