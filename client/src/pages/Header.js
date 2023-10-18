@@ -3,6 +3,7 @@ import Cookies from "js-cookie";
 import { useContext } from "react";
 import { MyContext } from "../context/context";
 import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 
 const Header = () => {
   const { isLogin, setIsLogin } = useContext(MyContext);
@@ -15,6 +16,7 @@ const Header = () => {
     if (isLogin) {
       Cookies.remove("token");
       setIsLogin(false);
+      return toast.success("logout success");
     } else {
       navigate("/login");
     }

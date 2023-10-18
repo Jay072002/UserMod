@@ -5,6 +5,7 @@ import UserAddress from "../Components/UserAddress";
 import UserProfile from "../Components/UserProfile";
 import { MyContext } from "../context/context";
 import axios from "../axios";
+import toast from "react-hot-toast";
 
 const AddUserInfo = () => {
   const [tabFlag, setTabFlag] = useState(true);
@@ -32,7 +33,7 @@ const AddUserInfo = () => {
   const handleSubmit = async () => {
     try {
       // hit the create user api
-      const data = await axios.post("/user", createUserData, {
+      await axios.post("/user", createUserData, {
         withCredentials: true,
       });
       setUserProfile({
@@ -52,8 +53,10 @@ const AddUserInfo = () => {
           zipCode: "",
         },
       ]);
+      toast.success("User Profile Added!");
       navigate("/home");
     } catch (error) {
+      toast.error("Something Went Wrong!");
       console.log(error);
     }
   };

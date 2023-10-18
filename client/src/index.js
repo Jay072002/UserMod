@@ -6,7 +6,8 @@ import Header from "./pages/Header";
 import Login from "./pages/Login";
 import Home from "./pages/Home";
 import AddUserInfo from "./pages/AddUserInfo";
-import { MyContext, MyContextProvider } from "./context/context";
+import { MyContextProvider } from "./context/context";
+import { Toaster } from "react-hot-toast";
 import UpdateUserInfo from "./pages/UpdateUserInfo";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
@@ -14,10 +15,13 @@ const root = ReactDOM.createRoot(document.getElementById("root"));
 // App with outlets
 const App = () => {
   return (
-    <MyContextProvider>
-      <Header />
-      <Outlet />
-    </MyContextProvider>
+    <div>
+      <Toaster position="top-right" reverseOrder={false} />
+      <MyContextProvider>
+        <Header />
+        <Outlet />
+      </MyContextProvider>
+    </div>
   );
 };
 

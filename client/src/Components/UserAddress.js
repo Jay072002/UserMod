@@ -15,6 +15,7 @@ import { useContext, useEffect, useState } from "react";
 import { MyContext } from "../context/context";
 import { useLocation } from "react-router-dom";
 import axios from "../axios";
+import toast from "react-hot-toast";
 
 const UserAddress = ({ userId }) => {
   const gridItemStyle = {
@@ -26,6 +27,7 @@ const UserAddress = ({ userId }) => {
   const { accordionItems, setAccordianItems } = useContext(MyContext);
   const [openItems, setOpenItems] = useState([]);
   const [addFlag, setAddFlag] = useState(true);
+  const [add, setAdd] = useState(true);
 
   const location = useLocation();
 
@@ -37,6 +39,22 @@ const UserAddress = ({ userId }) => {
       setAddFlag(false);
     }
   }, [pathname]);
+
+  const fetchAddresses = async () => {
+    try {
+      const { data } = await axios.get(`/address/${userId}`, {
+        withCredentials: true,
+      });
+      setAccordianItems(data);
+    } catch (error) {
+      console.log(error);
+      return toast.error("Something Went Wrong!");
+    }
+  };
+
+  useEffect(() => {
+    fetchAddresses();
+  }, []);
 
   const toggleAccordionItem = (index) => {
     if (openItems.includes(index)) {
@@ -61,31 +79,39 @@ const UserAddress = ({ userId }) => {
   };
 
   const addAccordian = async () => {
-    setAccordianItems((prev) => {
-      return [
-        ...prev,
-        {
-          title: `Accordian ${prev?.length + 1}`,
-          street: "",
-          city: "",
-          state: "",
-          zipCode: "",
-        },
-      ];
-    });
+    try {
+      setAdd(!add);
+      setAccordianItems((prev) => {
+        return [
+          ...prev,
+          {
+            title: `Accordian ${prev?.length + 1}`,
+            street: "",
+            city: "",
+            state: "",
+            zipCode: "",
+          },
+        ];
+      });
 
-    // if userId then we can update the address
-    if (userId) {
-      await axios.post(
-        `/address/${userId}`,
-        {
-          street: "",
-          city: "",
-          state: "",
-          zipCode: "",
-        },
-        { withCredentials: true }
-      );
+      // if userId then we can update the address
+      if (userId) {
+        await axios.post(
+          `/address/${userId}`,
+          {
+            street: "",
+            city: "",
+            state: "",
+            zipCode: "",
+          },
+          { withCredentials: true }
+        );
+      }
+
+      return toast.success("Accordian Added!");
+    } catch (error) {
+      console.log(error);
+      return toast.error("Somoething Went Wrong!");
     }
   };
 
@@ -94,18 +120,20 @@ const UserAddress = ({ userId }) => {
       // {title: 'Accordian 2', street: '', city: '', state: 'afsa', zipCode: ''}
       const { title, ...data } = item;
 
-      console.log(item, "itemm");
-
-      await axios.put(`/address/${item?._id}`, data, { withCredentials: true });
-      console.log("update success");
+      if (userId) {
+        await axios.put(`/address/${item?._id}`, data, {
+          withCredentials: true,
+        });
+        return toast.success("Accordian Updated!");
+      }
     } catch (error) {
       console.log(error);
+      return toast.error("Something Went Wrong!");
     }
   };
 
   const handleDelete = async (item) => {
     try {
-      console.log(item, "itennnn");
       if (item?._id) {
         await axios.delete(`/address/${item?._id}`, { withCredentials: true });
         const updatedAccordionItems = accordionItems.filter(
@@ -122,9 +150,10 @@ const UserAddress = ({ userId }) => {
         setAccordianItems(updatedAccordianItem);
       }
 
-      console.log(accordionItems, "acccc");
+      return toast.success("Accordian Deleted!");
     } catch (error) {
       console.log(error);
+      return toast.error("Something Went Wrong!");
     }
   };
 
@@ -142,7 +171,7 @@ const UserAddress = ({ userId }) => {
                 onClick={() => toggleAccordionItem(index)}
               >
                 <Box as="span" flex="1" textAlign="left">
-                  {`Accordian ${index + 1}`}
+                  {`Accordian`}
                 </Box>
                 <AccordionIcon />
               </AccordionButton>
@@ -203,7 +232,7 @@ const UserAddress = ({ userId }) => {
                   display={"flex"}
                   gap={"5px"}
                 >
-                  {item?._id ? (
+                  {userId ? (
                     <Button
                       cursor={"pointer"}
                       p={"5px 14px"}
@@ -212,6 +241,7 @@ const UserAddress = ({ userId }) => {
                       Update
                     </Button>
                   ) : null}
+
                   <Button
                     cursor={"pointer"}
                     p={"5px 14px"}

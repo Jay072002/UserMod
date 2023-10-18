@@ -1,8 +1,8 @@
 const User = require("../models/User");
 const Address = require("../models/Address");
-const { hashPassword } = require("../helpers/bcrypt");
+const { hashPassword } = require("../utils/helpers/bcrypt");
 
-// Create a new user
+// Create a new user or if address is provided then create address too
 const createUser = async (req, res) => {
   try {
     const { firstName, lastName, email, phoneNumber, password } = req.body;
@@ -46,12 +46,10 @@ const createUser = async (req, res) => {
   }
 };
 
-// Get all users
+// Get all users (without password and addresses)
 const getUsers = async (req, res) => {
-  console.log("entry");
   try {
     const users = await User.find().select("-password -addresses");
-    console.log(users);
     res.status(200).json(users);
   } catch (error) {
     console.error("Error fetching users:", error);
@@ -59,7 +57,7 @@ const getUsers = async (req, res) => {
   }
 };
 
-// Update user information
+// Update user information (user only)
 const updateUser = async (req, res) => {
   try {
     const userId = req.params.userId;
@@ -93,8 +91,6 @@ const getUser = async (req, res) => {
 
     const { password, ...restUser } = user?._doc;
 
-    console.log(restUser);
-
     res.status(200).json({ user: restUser, addresses });
   } catch (error) {
     console.error("Error getting user:", error);
@@ -102,6 +98,7 @@ const getUser = async (req, res) => {
   }
 };
 
+// delete a user and the addresses associated with that user
 const deleteUser = async (req, res) => {
   try {
     const { userId } = req.params;

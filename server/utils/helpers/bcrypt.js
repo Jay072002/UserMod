@@ -1,5 +1,6 @@
 const bcrypt = require("bcrypt");
 
+// Convert the plain password into hash for privacy
 const hashPassword = async (password) => {
   try {
     const salt = await bcrypt.genSalt(10);
@@ -11,6 +12,7 @@ const hashPassword = async (password) => {
   }
 };
 
+// Compare the plain password with the password stored in the db
 const comparePassword = async (password, hashPass) => {
   try {
     const isMatched = await bcrypt.compare(password, hashPass);

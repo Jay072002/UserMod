@@ -5,6 +5,7 @@ import { MyContext } from "../context/context";
 import { Button, Container, Tab, TabList, Tabs } from "@chakra-ui/react";
 import UserProfile from "../Components/UserProfile";
 import UserAddress from "../Components/UserAddress";
+import toast from "react-hot-toast";
 
 const UpdateUserInfo = () => {
   const [tabFlag, setTabFlag] = useState(true);
@@ -45,7 +46,6 @@ const UpdateUserInfo = () => {
   // handle submit
   const handleSubmit = async () => {
     // when submitted just update the user profile addresses are managed in the addresses tab
-    console.log(userProfile, "userProfile");
 
     const updatedBody = {
       firstName: userProfile?.firstName,
@@ -58,12 +58,11 @@ const UpdateUserInfo = () => {
       await axios.put(`/user/${userId}`, updatedBody, {
         withCredentials: true,
       });
-
+      toast.success("User Profile Updated!");
       navigate("/home");
-
-      console.log("updated success");
     } catch (error) {
       console.log(error);
+      return toast.error("Something Went Wrong!");
     }
   };
 

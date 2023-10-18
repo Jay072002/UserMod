@@ -1,12 +1,12 @@
-const { comparePassword } = require("../helpers/bcrypt");
-const { generateToken } = require("../helpers/jwt");
+const { comparePassword } = require("../utils/helpers/bcrypt");
+const { generateToken } = require("../utils/helpers/jwt");
 const User = require("../models/User");
 
+// loging the user with credentials
 const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    console.log(req.body);
     // Check if the user is registered
     const user = await User.findOne({ email });
 

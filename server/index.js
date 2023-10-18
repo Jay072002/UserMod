@@ -9,11 +9,11 @@ const seeder = require("./seeder");
 const app = express();
 
 // App middlewares
-app.use(express.json());
-app.use(cookieParser());
+app.use(express.json()); //allow express to use json data
+app.use(cookieParser()); //allow express to store and access the cookie
 app.use(
   cors({
-    origin: "http://localhost:3000", // Specify your frontend's origin
+    origin: "http://localhost:3000", // frontend's origin
     credentials: true, // Allow cookies
   })
 );
@@ -21,10 +21,11 @@ app.use(
 // App routes
 app.use("/api/v1", router);
 
+// database connection, seeder function invocation and server setting up
 (async () => {
   try {
     const URL = process.env.MONGO_URI;
-    const PORT = process.env.PORT;
+    const PORT = process.env.PORT || 5000;
 
     await connect(URL);
 
@@ -41,3 +42,13 @@ app.use("/api/v1", router);
     throw new Error(error);
   }
 })();
+
+// Custom error handling middleware
+app.use((err, req, res, next) => {
+  console.error(err);
+
+  res.status(500).json({
+    error: "Internal Server Error",
+    message: "An error occurred while processing your request",
+  });
+});

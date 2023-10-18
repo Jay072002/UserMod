@@ -14,20 +14,19 @@ const {
 
 const router = require("express").Router();
 
-// Create User
-
+// Create User (admin only)
 router.post("/", verifyTokenAndAdmin, createUser);
 
-// Get All Users
+// Get All Users (every user)
 router.get("/", verifyToken, getUsers);
 
-// Update User
-router.put("/:userId", updateUser);
+// Update User (admin and authorized user)
+router.put("/:userId", verifyTokenAndAuthorization, updateUser);
 
-// delete the user
+// delete the user (admin and authorized user)
 router.delete("/:userId", verifyTokenAndAuthorization, deleteUser);
 
-// get single user
-router.get("/:userId", verifyTokenAndAdmin, getUser);
+// get single user (admin and authorized user)
+router.get("/:userId", verifyTokenAndAuthorization, getUser);
 
 module.exports = router;

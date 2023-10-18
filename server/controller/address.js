@@ -1,6 +1,7 @@
 const Address = require("../models/Address");
 const User = require("../models/User");
 
+// create a address and push the address id in the user model addresses field
 const addAddress = async (req, res) => {
   try {
     const { userId } = req.params;
@@ -26,12 +27,12 @@ const addAddress = async (req, res) => {
   }
 };
 
+// update the specific address of user
 const updateAddress = async (req, res) => {
   try {
     const { addressId } = req.params;
     const updatedAddress = req.body;
-    console.log(addressId);
-    console.log(updateAddress);
+
     const address = await Address.findByIdAndUpdate(addressId, updatedAddress, {
       new: true,
     });
@@ -43,15 +44,29 @@ const updateAddress = async (req, res) => {
   }
 };
 
+// delete the address of the user and also from the user model remove the address id
 const deleteAddress = async (req, res) => {
   try {
     const { addressId } = req.params;
 
-    console.log(addressId);
+    const { user: userId } = await Address.findById(addressId).select("user");
 
-    await Address.deleteOne({ _id: addressId });
+    // if there is address then delete the address and the address from user
+    if (userId) {
+      await Address.deleteOne({ _id: addressId });
 
-    console.log(addressId);
+      const user = await User.findById(userId);
+
+      // find the index of the address in the user's addresses array
+      const addressIndex = user.addresses.indexOf(addressId);
+
+      // if the address exists in the user's addresses, then remove it
+      if (addressIndex !== -1) {
+        user.addresses.splice(addressIndex, 1);
+        await user.save();
+      }
+    }
+
     res.status(200).json({ message: "Address deleted successfully" });
   } catch (error) {
     console.error("Error Deleting address:", error);
@@ -59,8 +74,22 @@ const deleteAddress = async (req, res) => {
   }
 };
 
+// get addresses of the particular user
+const getAddresses = async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    const addresses = await Address.find({ user: userId });
+    res.status(200).json(addresses);
+  } catch (error) {
+    console.error("Error Getting address:", error);
+    res.status(500).json({ error: "Could not Get addresses" });
+  }
+};
+
 module.exports = {
   addAddress,
   updateAddress,
   deleteAddress,
+  getAddresses,
 };

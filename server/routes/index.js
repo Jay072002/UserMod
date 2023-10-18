@@ -3,15 +3,15 @@ const userRouter = require("./user");
 const addressRouter = require("./address");
 const authRouter = require("./auth");
 
-// all routes goes here
+// App routes goes here
 
-// auth routes
+// auth related routes
 router.use("/auth", authRouter);
 
-// user routes
+// user related routes
 router.use("/user", userRouter);
 
-// address routes
+// address related routes
 router.use("/address", addressRouter);
 
 module.exports = router;

@@ -4,6 +4,7 @@ import { useContext, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "../axios";
 import { MyContext } from "../context/context";
+import toast from "react-hot-toast";
 
 const Home = () => {
   const cellPadding = "10px"; // Adjust the padding value as needed\
@@ -42,7 +43,11 @@ const Home = () => {
           return user._id !== item._id;
         })
       );
-    } catch (error) {}
+      return toast.success("User Deleted!");
+    } catch (error) {
+      console.log(error);
+      return toast.error("Something Went Wrong!");
+    }
   };
 
   return (

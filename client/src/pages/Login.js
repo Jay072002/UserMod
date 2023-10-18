@@ -4,6 +4,7 @@ import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "../axios";
 import { MyContext } from "../context/context";
+import toast from "react-hot-toast";
 
 const Login = () => {
   const [user, setUser] = useState({
@@ -21,12 +22,15 @@ const Login = () => {
         Cookies.set("token", data?.token);
         setIsLogin(true);
         setLoggedInUser(data?.payload?._doc);
+        toast.success("login success!");
         navigate("/home");
       } else {
         console.error("No token received in the response");
+        return toast.error("login failed!");
       }
     } catch (error) {
       console.log(error);
+      return toast.error("login failed!");
     }
   };
 

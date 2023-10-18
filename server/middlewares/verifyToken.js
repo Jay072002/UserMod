@@ -1,9 +1,9 @@
 const jwt = require("jsonwebtoken");
 
+// verify user token
 const verifyToken = (req, res, next) => {
   const { token } = req.cookies;
-  console.log(token);
-  const secretKey = process.env.SECRETKEY;
+  const secretKey = process.env?.SECRETKEY;
   try {
     if (!token) {
       return res.status(401).json({ message: "Token is missing" });
@@ -13,8 +13,7 @@ const verifyToken = (req, res, next) => {
       if (err) {
         return res.status(401).json({ message: "Token is invalid" });
       }
-      req.user = decoded;
-
+      req.user = decoded; //store the user's payload in the req.user
       next();
     });
   } catch (error) {
@@ -23,9 +22,10 @@ const verifyToken = (req, res, next) => {
   }
 };
 
+// Only authorize user can access further
 function verifyTokenAndUser(req, res, next) {
   verifyToken(req, res, () => {
-    const userId = req.params.userId; //params userId
+    const userId = req?.params?.userId; //params userId
     const id = req.user.id; //the loggen in user id
     if (userId && userId !== id) {
       return res.status(403).json({ message: "Token does not match the user" });
@@ -34,6 +34,7 @@ function verifyTokenAndUser(req, res, next) {
   });
 }
 
+// Only admin can access further
 function verifyTokenAndAdmin(req, res, next) {
   verifyToken(req, res, () => {
     if (!req?.user?._doc?.isAdmin) {
@@ -46,10 +47,13 @@ function verifyTokenAndAdmin(req, res, next) {
   });
 }
 
+// Only admin and authorize user can access further
 function verifyTokenAndAuthorization(req, res, next) {
   verifyToken(req, res, () => {
-    const userId = req.params.userId; //params userId
-    const id = req.user.id; //the loggen in user id
+    const userId = req?.params?.userId; //params userId
+    const id = req?.user?.id; //the loggen in user id
+
+    // allow admin and authorized user to access
     if ((userId && userId !== id) || req?.user?._doc?.isAdmin) {
       next();
     } else {

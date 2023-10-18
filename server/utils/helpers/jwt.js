@@ -1,5 +1,6 @@
 const jwt = require("jsonwebtoken");
 
+// Generate token valid for 1hr for authentication
 const generateToken = (payload) => {
   try {
     const secretKey = process.env.SECRETKEY;
