@@ -5,6 +5,8 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "../axios";
 import { MyContext } from "../context/context";
 import toast from "react-hot-toast";
+import { BiEditAlt } from "react-icons/bi";
+import { AiFillDelete } from "react-icons/ai";
 
 const Home = () => {
   const cellPadding = "10px"; // Adjust the padding value as needed\
@@ -142,21 +144,30 @@ const Home = () => {
                         padding={cellPadding}
                         textAlign={"center"}
                       >
-                        <Button
+                        <BiEditAlt
                           cursor={"pointer"}
-                          mr={"3px"}
                           onClick={() =>
                             navigate(`/updateuserinfo/${item?._id}`)
                           }
+                          size={"20px"}
+                          fill="black"
+                          style={{
+                            marginRight: "10px",
+                            transition: "fill 0.4s",
+                          }}
+                          className="BiEditAlt"
                         >
                           Edit
-                        </Button>
-                        <Button
-                          onClick={() => handleDelete(item)}
+                        </BiEditAlt>
+
+                        <AiFillDelete
+                          size={"20px"}
                           cursor={"pointer"}
-                        >
-                          Delete
-                        </Button>
+                          fill="black"
+                          style={{ transition: "fill 0.4s" }}
+                          className="AiFillDelete"
+                          onClick={() => handleDelete(item)}
+                        />
                       </Td>
                     ) : null}
                   </Tr>

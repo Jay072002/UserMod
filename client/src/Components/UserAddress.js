@@ -10,12 +10,14 @@ import {
   GridItem,
   Button,
   Input,
+  Flex,
 } from "@chakra-ui/react";
 import { useContext, useEffect, useState } from "react";
 import { MyContext } from "../context/context";
 import { useLocation } from "react-router-dom";
 import axios from "../axios";
 import toast from "react-hot-toast";
+import { AiFillDelete } from "react-icons/ai";
 
 const UserAddress = ({ userId }) => {
   const gridItemStyle = {
@@ -53,8 +55,10 @@ const UserAddress = ({ userId }) => {
   };
 
   useEffect(() => {
-    fetchAddresses();
-  }, []);
+    if (userId) {
+      fetchAddresses();
+    }
+  }, [add]);
 
   const toggleAccordionItem = (index) => {
     if (openItems.includes(index)) {
@@ -161,98 +165,113 @@ const UserAddress = ({ userId }) => {
     <Container p={"30px"} w={"70vw"} mx={"auto"} border={"1px solid black"}>
       <Accordion width={"70vw"} allowToggle>
         {accordionItems?.map((item, index) => (
-          <AccordionItem key={index}>
-            <h2>
-              <AccordionButton
-                bg={"transparent"}
-                cursor={"pointer"}
-                p={"10px"}
-                borderRadius={"100px"}
-                onClick={() => toggleAccordionItem(index)}
-              >
-                <Box as="span" flex="1" textAlign="left">
-                  {`Accordian`}
-                </Box>
-                <AccordionIcon />
-              </AccordionButton>
-            </h2>
-            <AccordionPanel pb={4}>
-              <Grid
-                w={"70vw"}
-                templateRows="repeat(2, 1fr)"
-                templateColumns="repeat(2, 1fr)"
-                gap={20}
-              >
-                <GridItem style={gridItemStyle}>
-                  <Input
-                    onChange={(e) => {
-                      handleInputChange("street", item, e.target.value);
-                    }}
-                    placeholder="Street Address"
-                    value={item?.street}
-                  />
-                </GridItem>
-                <GridItem style={gridItemStyle}>
-                  <Input
-                    onChange={(e) => {
-                      handleInputChange("city", item, e.target.value);
-                    }}
-                    placeholder="City"
-                    value={item?.city}
-                  />
-                </GridItem>
-                <GridItem style={gridItemStyle}>
-                  <Input
-                    onChange={(e) => {
-                      handleInputChange("state", item, e.target.value);
-                    }}
-                    placeholder="Select State"
-                    value={item?.state}
-                  />
-                </GridItem>
-                <GridItem style={gridItemStyle}>
-                  <input
-                    type="number"
-                    maxLength="10"
-                    onChange={(e) => {
-                      handleInputChange("zipCode", item, e.target.value);
-                    }}
-                    placeholder="Zip Code"
-                    value={item?.zipCode}
-                  />
-                </GridItem>
-              </Grid>
-              {/* update option should only appear if any of the value of this item changes */}
-              {!addFlag || pathname.includes("add") ? (
-                <Container
-                  p={"20px"}
-                  w={"10vw"}
-                  mx={"auto"}
+          <Container
+            display={"flex"}
+            p={"10px"}
+            justifyContent={"space-between"}
+            alignItems={"center"}
+          >
+            <AccordionItem key={index} width={"93%"}>
+              <h2>
+                <AccordionButton
+                  bg={"transparent"}
                   cursor={"pointer"}
-                  display={"flex"}
-                  gap={"5px"}
+                  p={"10px"}
+                  borderRadius={"100px"}
+                  onClick={() => toggleAccordionItem(index)}
                 >
-                  {userId ? (
+                  <Box as="span" flex="1" textAlign="left">
+                    {`Accordian`}
+                  </Box>
+                  <AccordionIcon />
+                </AccordionButton>
+              </h2>
+              <AccordionPanel pb={4}>
+                <Grid
+                  w={"70vw"}
+                  templateRows="repeat(2, 1fr)"
+                  templateColumns="repeat(2, 1fr)"
+                  gap={20}
+                >
+                  <GridItem style={gridItemStyle}>
+                    <Input
+                      onChange={(e) => {
+                        handleInputChange("street", item, e.target.value);
+                      }}
+                      placeholder="Street Address"
+                      value={item?.street}
+                    />
+                  </GridItem>
+                  <GridItem style={gridItemStyle}>
+                    <Input
+                      onChange={(e) => {
+                        handleInputChange("city", item, e.target.value);
+                      }}
+                      placeholder="City"
+                      value={item?.city}
+                    />
+                  </GridItem>
+                  <GridItem style={gridItemStyle}>
+                    <Input
+                      onChange={(e) => {
+                        handleInputChange("state", item, e.target.value);
+                      }}
+                      placeholder="Select State"
+                      value={item?.state}
+                    />
+                  </GridItem>
+                  <GridItem style={gridItemStyle}>
+                    <input
+                      type="number"
+                      maxLength="10"
+                      onChange={(e) => {
+                        handleInputChange("zipCode", item, e.target.value);
+                      }}
+                      placeholder="Zip Code"
+                      value={item?.zipCode}
+                    />
+                  </GridItem>
+                </Grid>
+                {/* update option should only appear if any of the value of this item changes */}
+                {!addFlag || pathname.includes("add") ? (
+                  <Container
+                    p={"20px"}
+                    w={"10vw"}
+                    mx={"auto"}
+                    cursor={"pointer"}
+                    display={"flex"}
+                    gap={"5px"}
+                  >
+                    {userId ? (
+                      <Button
+                        cursor={"pointer"}
+                        p={"5px 14px"}
+                        onClick={() => handleUpdate(item)}
+                      >
+                        Update
+                      </Button>
+                    ) : null}
+
                     <Button
                       cursor={"pointer"}
                       p={"5px 14px"}
-                      onClick={() => handleUpdate(item)}
+                      onClick={() => handleDelete(item)}
                     >
-                      Update
+                      Delete
                     </Button>
-                  ) : null}
-
-                  <Button
-                    cursor={"pointer"}
-                    p={"5px 14px"}
-                    onClick={() => handleDelete(item)}
-                  >
-                    Delete
-                  </Button>
-                </Container>
-              ) : null}
-            </AccordionPanel>
-          </AccordionItem>
+                  </Container>
+                ) : null}
+              </AccordionPanel>
+            </AccordionItem>
+            <AiFillDelete
+              size={"20px"}
+              cursor={"pointer"}
+              fill="black"
+              style={{ transition: "fill 0.4s" }}
+              className="AiFillDelete"
+              onClick={() => handleDelete(item)}
+            />
+          </Container>
         ))}
       </Accordion>
 

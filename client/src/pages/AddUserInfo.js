@@ -125,6 +125,7 @@ const AddUserInfo = () => {
           p={"4px 18px"}
           cursor={"pointer"}
           mr={"163px"}
+          _hover={{ bg: "teal", transition: "0.2s" }}
         >
           submit
         </Button>

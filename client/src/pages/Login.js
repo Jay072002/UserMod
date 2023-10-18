@@ -1,6 +1,6 @@
 import { Button, Container } from "@chakra-ui/react";
 import Cookies from "js-cookie";
-import { useContext, useState } from "react";
+import { useContext, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "../axios";
 import { MyContext } from "../context/context";
@@ -11,6 +11,14 @@ const Login = () => {
     email: "",
     password: "",
   });
+
+  const buttonRef = useRef(null);
+
+  const handleKeyPress = (event) => {
+    if (event.key === "Enter") {
+      buttonRef.current.click();
+    }
+  };
 
   const navigate = useNavigate();
   const { isLogin, setIsLogin, setLoggedInUser } = useContext(MyContext);
@@ -55,12 +63,14 @@ const Login = () => {
           placeholder="Email"
           className="input"
           onChange={(e) => setUser({ ...user, email: e.target.value })}
+          onKeyPress={handleKeyPress}
         ></input>
         <input
           type="password"
           placeholder="password"
           className="input"
           onChange={(e) => setUser({ ...user, password: e.target.value })}
+          onKeyPress={handleKeyPress}
         ></input>
         <Button
           cursor={"pointer"}
@@ -69,6 +79,8 @@ const Login = () => {
           p={"5px 14px"}
           mt={"10px"}
           onClick={handleSubmit}
+          _hover={{ bg: "teal", transition: "0.2s" }}
+          ref={buttonRef}
         >
           submit
         </Button>
