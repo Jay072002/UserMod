@@ -1,4 +1,4 @@
-import { Container } from "@chakra-ui/react";
+import { Container, Select } from "@chakra-ui/react";
 import { Table, Thead, Tbody, Tr, Th, Td, Button } from "@chakra-ui/react";
 import { useContext, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
@@ -13,13 +13,20 @@ import {
 } from "react-icons/ai";
 
 const Home = () => {
-  const cellPadding = "10px"; // Adjust the padding value as needed\
-  const { isLogin, loggedInUser, setAddUserButtonFlag, isDark } =
-    useContext(MyContext);
+  const cellPadding = "10px";
+  const {
+    isLogin,
+    loggedInUser,
+    setAddUserButtonFlag,
+    isDark,
+    limit,
+    setLimit,
+  } = useContext(MyContext);
 
   const [users, setUsers] = useState([]);
   const [pageIndex, setPageIndex] = useState(1);
-  const [limit, setLimit] = useState(3);
+
+  const [srNumber, setSrNumber] = useState(0);
 
   const navigate = useNavigate();
 
@@ -38,40 +45,45 @@ const Home = () => {
     }
   };
 
-  // fetch all the users when component mounts
   useEffect(() => {
+    if (srNumber < 0) {
+      setSrNumber(0);
+    }
     if (!isLogin) {
       navigate("/login");
     }
     fetchUsers();
-  }, [isLogin, pageIndex]);
+  }, [isLogin, pageIndex, limit, srNumber]);
 
   const handleDelete = async (item) => {
     try {
       await axios.delete(`/user/${item._id}`, { withCredentials: true });
 
       setUsers((prevUsers) =>
-        prevUsers.filter((user) => {
-          return user._id !== item._id;
-        })
+        prevUsers.filter((user) => user._id !== item._id)
       );
-      return toast.success("User Deleted!");
+      toast.success("User Deleted!");
     } catch (error) {
       console.log(error);
-      return toast.error("Something Went Wrong!");
+      toast.error("Something Went Wrong!");
     }
   };
 
   const handleArrow = (event) => {
-    if (event === "increment") {
-      if (users?.length === limit) {
-        setPageIndex(pageIndex + 1);
-      }
-    } else if (event === "decrement") {
-      if (pageIndex !== 1) {
-        setPageIndex(pageIndex - 1);
-      }
+    if (event === "increment" && users.length === limit) {
+      setSrNumber(srNumber + limit);
+      setPageIndex(pageIndex + 1);
+    } else if (event === "decrement" && pageIndex !== 1) {
+      setSrNumber(srNumber - limit);
+      setPageIndex(pageIndex - 1);
     }
+  };
+
+  const handleSelect = (e) => {
+    const selectedLimit = parseInt(e.target.value, 10);
+    setLimit(selectedLimit);
+    setSrNumber(0);
+    setPageIndex(1); // Reset pageIndex to 1 when changing the limit.
   };
 
   return (
@@ -81,10 +93,10 @@ const Home = () => {
           display={"flex"}
           flexDir={"row-reverse"}
           mr={"142px"}
-          p={"20px"}
+          p={"0 20px"}
         >
-          {loggedInUser.isAdmin ? (
-            <Link to={"/adduserinfo"}>
+          {loggedInUser.isAdmin && (
+            <Link to="/adduserinfo">
               <Button
                 p={"5px 10px"}
                 cursor={"pointer"}
@@ -96,8 +108,23 @@ const Home = () => {
                 Add User
               </Button>
             </Link>
-          ) : null}
+          )}
         </Container>
+        <Select
+          placeholder={`limit - ${limit}`}
+          cursor={"pointer"}
+          onChange={handleSelect}
+          p={"10px"}
+          fontWeight={"bold"}
+        >
+          <option value="1">1</option>
+          <option value="3">3</option>
+          <option value="5">5</option>
+          <option value="10">10</option>
+          <option value="20">20</option>
+          <option value="30">30</option>
+        </Select>
+
         <Container
           p={"10px"}
           display={"flex"}
@@ -151,82 +178,65 @@ const Home = () => {
               </Tr>
             </Thead>
             <Tbody>
-              {users?.map((item, index) => {
-                return (
-                  <Tr key={item?._id}>
+              {users?.map((item, index) => (
+                <Tr key={item?._id}>
+                  <Td
+                    borderRight={isDark ? "1px solid white" : "1px solid black"}
+                    padding={cellPadding}
+                    textAlign={"center"}
+                  >
+                    {srNumber + index + 1}
+                  </Td>
+                  <Td
+                    borderRight={isDark ? "1px solid white" : "1px solid black"}
+                    padding={cellPadding}
+                    textAlign={"center"}
+                  >
+                    {item?.firstName + " " + item?.lastName || "-"}
+                  </Td>
+                  <Td
+                    borderRight={isDark ? "1px solid white" : "1px solid black"}
+                    padding={cellPadding}
+                    textAlign={"center"}
+                  >
+                    {item?.email || "-"}
+                  </Td>
+                  <Td
+                    borderRight={isDark ? "1px solid white" : "1px solid black"}
+                    padding={cellPadding}
+                    textAlign={"center"}
+                  >
+                    {item?.phoneNumber || "-"}
+                  </Td>
+                  {(loggedInUser._id === item._id || loggedInUser?.isAdmin) && (
                     <Td
-                      borderRight={
-                        isDark ? "1px solid white" : "1px solid black"
-                      }
+                      borderWidth="1px"
                       padding={cellPadding}
                       textAlign={"center"}
                     >
-                      {index + 1}
-                    </Td>
-                    <Td
-                      borderRight={
-                        isDark ? "1px solid white" : "1px solid black"
-                      }
-                      padding={cellPadding}
-                      textAlign={"center"}
-                    >
-                      {item?.firstName + " " + item?.lastName || "-"}
-                    </Td>
-                    <Td
-                      borderRight={
-                        isDark ? "1px solid white" : "1px solid black"
-                      }
-                      padding={cellPadding}
-                      textAlign={"center"}
-                    >
-                      {item?.email || "-"}
-                    </Td>
-                    <Td
-                      borderRight={
-                        isDark ? "1px solid white" : "1px solid black"
-                      }
-                      padding={cellPadding}
-                      textAlign={"center"}
-                    >
-                      {item?.phoneNumber || "-"}
-                    </Td>
-                    {loggedInUser._id == item._id || loggedInUser?.isAdmin ? (
-                      <Td
-                        borderWidth="1px"
-                        padding={cellPadding}
-                        textAlign={"center"}
+                      <BiEditAlt
+                        cursor={"pointer"}
+                        onClick={() => navigate(`/updateuserinfo/${item?._id}`)}
+                        size={"20px"}
+                        fill="black"
+                        style={{ marginRight: "10px", transition: "fill 0.4s" }}
+                        className="BiEditAlt"
                       >
-                        <BiEditAlt
-                          cursor={"pointer"}
-                          onClick={() =>
-                            navigate(`/updateuserinfo/${item?._id}`)
-                          }
-                          size={"20px"}
-                          fill="black"
-                          style={{
-                            marginRight: "10px",
-                            transition: "fill 0.4s",
-                          }}
-                          className="BiEditAlt"
-                        >
-                          Edit
-                        </BiEditAlt>
+                        Edit
+                      </BiEditAlt>
 
-                        <AiFillDelete
-                          size={"20px"}
-                          cursor={"pointer"}
-                          fill="black"
-                          style={{ transition: "fill 0.4s" }}
-                          className="AiFillDelete"
-                          onClick={() => handleDelete(item)}
-                        />
-                      </Td>
-                    ) : null}
-                  </Tr>
-                );
-              })}
-
-              {/* Add more rows as needed */}
+                      <AiFillDelete
+                        size={"20px"}
+                        cursor={"pointer"}
+                        fill="black"
+                        style={{ transition: "fill 0.4s" }}
+                        className="AiFillDelete"
+                        onClick={() => handleDelete(item)}
+                      />
+                    </Td>
+                  )}
+                </Tr>
+              ))}
             </Tbody>
           </Table>
           <AiOutlineArrowRight

@@ -28,6 +28,8 @@ export const MyContextProvider = ({ children }) => {
 
   const [isDark, setIsDark] = useState(false);
 
+  const [limit, setLimit] = useState(3);
+
   return (
     <MyContext.Provider
       value={{
@@ -43,6 +45,8 @@ export const MyContextProvider = ({ children }) => {
         setAddUserButtonFlag,
         isDark,
         setIsDark,
+        limit,
+        setLimit,
       }}
     >
       {children}
