@@ -8,8 +8,7 @@ const addressSchema = new mongoose.Schema({
     type: String,
   },
   zipCode: {
-    type: Number,
-    maxLength: 6,
+    type: String,
   },
   state: {
     type: String,

@@ -8,6 +8,13 @@ const createUser = async (req, res) => {
     const { firstName, lastName, email, phoneNumber, password } = req.body;
     let addresses = req.body.addresses || [];
 
+    // check if the email exist in the db already
+    const isAlreadyRegistered = await User.findOne({ email });
+
+    if (isAlreadyRegistered) {
+      return res.status(400).json({ error: "User Already Exist!" });
+    }
+
     // Hash the password before saving it to the database
     const hashedPassword = await hashPassword(password);
 
@@ -39,7 +46,9 @@ const createUser = async (req, res) => {
       await user.save();
     }
 
-    res.status(201).json({ message: "User created successfully", user });
+    const { password: hashedPass, ...restUser } = user._doc;
+
+    res.status(201).json({ message: "User created successfully", restUser });
   } catch (error) {
     console.error("Error creating user:", error);
     res.status(500).json({ error: "Could not create the user" });
@@ -61,13 +70,13 @@ const getUsers = async (req, res) => {
 const updateUser = async (req, res) => {
   try {
     const userId = req.params?.userId;
-    const data = req.body;
+    const requestBody = req.body;
 
-    if (data?.password) {
+    if (requestBody?.password) {
       return res.status(422).json({ error: "Unprocessable Entity" });
     }
 
-    const updatedUser = await User.findByIdAndUpdate(userId, data, {
+    const updatedUser = await User.findByIdAndUpdate(userId, requestBody, {
       new: true,
     });
 
@@ -75,9 +84,11 @@ const updateUser = async (req, res) => {
       return res.status(404).json({ error: "User not found" });
     }
 
+    const { password, ...restUser } = updatedUser._doc;
+    console.log(restUser, "rest");
     res
       .status(200)
-      .json({ message: "User updated successfully", user: updatedUser });
+      .json({ message: "User updated successfully", user: restUser });
   } catch (error) {
     console.error("Error updating user:", error);
     res.status(500).json({ error: "Could not update the user" });
@@ -106,6 +117,13 @@ const getUser = async (req, res) => {
 const deleteUser = async (req, res) => {
   try {
     const { userId } = req.params;
+
+    // check if the user exists before deleting
+    const isExist = await User.findById(userId);
+
+    if (!isExist) {
+      return res.status(400).json({ error: "User Does Not Exists" });
+    }
 
     // First, delete the user
     await User.deleteOne({ _id: userId });

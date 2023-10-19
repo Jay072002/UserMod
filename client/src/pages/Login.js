@@ -27,10 +27,13 @@ const Login = () => {
   const handleSubmit = async () => {
     try {
       const { data } = await axios.post("/auth/login", user);
+
+      console.log(data, "datttttaa");
+
       if (data?.token) {
         Cookies.set("token", data?.token);
         setIsLogin(true);
-        setLoggedInUser(data?.payload?._doc);
+        setLoggedInUser(data?.payload);
         toast.success("login success!");
         navigate("/home");
       } else {

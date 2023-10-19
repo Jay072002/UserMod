@@ -7,20 +7,24 @@ const addAddress = async (req, res) => {
     const { userId } = req.params;
     const addressBody = req.body;
 
-    // Create a new address
-    const address = new Address({ user: userId, ...addressBody });
+    // check if the user exist before adding address
     const user = await User.findById(userId);
 
     if (!user) {
-      return res.status(404).json({ error: "User not found" });
+      return res
+        .status(400)
+        .json({ error: "Associated User Does Not Exists!" });
     }
+
+    // Create a new address
+    const address = new Address({ user: userId, ...addressBody });
 
     user.addresses.push(address); // Push the address object, not just the body
 
     await address.save();
     await user.save();
 
-    res.status(200).json({ message: "Address added successfully", user });
+    res.status(200).json({ message: "Address added successfully", address });
   } catch (error) {
     console.error("Error adding address:", error);
     res.status(500).json({ error: "Could not add the address" });
@@ -78,6 +82,15 @@ const deleteAddress = async (req, res) => {
 const getAddresses = async (req, res) => {
   try {
     const { userId } = req.params;
+
+    // check if the user exist before fetching the associated addresses
+    const isExist = await User.findById(userId);
+
+    if (!isExist) {
+      return res
+        .status(400)
+        .json({ error: "Associated User Does Not Exists!" });
+    }
 
     const addresses = await Address.find({ user: userId });
     res.status(200).json(addresses);

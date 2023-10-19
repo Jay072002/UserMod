@@ -13,6 +13,7 @@ const verifyToken = (req, res, next) => {
       if (err) {
         return res.status(401).json({ message: "Token is invalid" });
       }
+
       req.user = decoded; //store the user's payload in the req.user
       next();
     });
@@ -37,7 +38,7 @@ function verifyTokenAndUser(req, res, next) {
 // Only admin can access further
 function verifyTokenAndAdmin(req, res, next) {
   verifyToken(req, res, () => {
-    if (!req?.user?._doc?.isAdmin) {
+    if (!req?.user?.isAdmin) {
       return res
         .status(403)
         .json({ message: "Only Admin Can Perform This Action" });
@@ -54,7 +55,7 @@ function verifyTokenAndAuthorization(req, res, next) {
     const id = req?.user?.id; //the loggen in user id
 
     // allow admin and authorized user to access
-    if ((userId && userId !== id) || req?.user?._doc?.isAdmin) {
+    if ((userId && userId !== id) || req?.user?.isAdmin) {
       next();
     } else {
       return res

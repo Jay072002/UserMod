@@ -13,6 +13,7 @@ const Home = () => {
   const { isLogin, loggedInUser, setAddUserButtonFlag, isDark } =
     useContext(MyContext);
 
+  console.log(loggedInUser, "logged in user");
   const [users, setUsers] = useState([]);
 
   const navigate = useNavigate();

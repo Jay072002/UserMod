@@ -7,6 +7,8 @@ const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
 
+    console.log(req.body);
+
     // Check if the user is registered
     const user = await User.findOne({ email });
 
