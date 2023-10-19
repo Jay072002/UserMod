@@ -76,6 +76,7 @@ const UpdateUserInfo = () => {
               }}
               style={{
                 background: tabFlag ? null : "none", // If tabFlag is true, set the background to none
+                fontWeight: "bolder",
               }}
             >
               Profile
@@ -88,6 +89,7 @@ const UpdateUserInfo = () => {
               w={"7rem"}
               style={{
                 background: tabFlag ? "none" : null, // If tabFlag is true, set the background to none
+                fontWeight: "bolder",
               }}
             >
               {" "}
