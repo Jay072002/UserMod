@@ -1,18 +1,49 @@
-const JOI = require("joi");
+const Joi = require("joi");
 
-// { email, password }
-
-const authSchema = JOI.object({
-  email: JOI.string().email().required(),
-  password: JOI.string().min(3).max(15),
+// Joi schema for user creation
+const createUserSchema = Joi.object({
+  firstName: Joi.string().required(),
+  lastName: Joi.string().required(),
+  email: Joi.string().email().required(),
+  phoneNumber: Joi.number().integer(),
+  password: Joi.string().required(),
+  addresses: Joi.array().items(
+    Joi.object({
+      street: Joi.string(),
+      city: Joi.string(),
+      zipCode: Joi.number().integer().allow(null),
+      state: Joi.string(),
+    })
+  ),
 });
 
-// { firstName, lastName, email, phoneNumber, password }
-
-const createUserSchema = JOI.object({
-  firstName: JOI.string().lowercase().min(3),
-  lastName: JOI.string().lowercase().min(3),
-  email: JOI.string().email().required(),
-  phoneNumber: JOI.number().min(10).max(10),
-  password: JOI.string().min(3).max(15),
+// Joi schema for updating user information
+const updateUserSchema = Joi.object({
+  firstName: Joi.string(),
+  lastName: Joi.string(),
+  email: Joi.string().email(),
+  phoneNumber: Joi.number().integer(),
 });
+
+// Joi schema for address creation
+const createAddressSchema = Joi.object({
+  street: Joi.string().required(),
+  city: Joi.string().required(),
+  zipCode: Joi.number().integer().allow(null),
+  state: Joi.string().required(),
+});
+
+// Joi schema for updating an address
+const updateAddressSchema = Joi.object({
+  street: Joi.string(),
+  city: Joi.string(),
+  zipCode: Joi.number().integer().allow(null),
+  state: Joi.string(),
+});
+
+module.exports = {
+  createUserSchema,
+  updateUserSchema,
+  createAddressSchema,
+  updateAddressSchema,
+};

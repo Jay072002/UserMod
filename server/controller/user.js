@@ -63,6 +63,10 @@ const updateUser = async (req, res) => {
     const userId = req.params?.userId;
     const data = req.body;
 
+    if (data?.password) {
+      return res.status(422).json({ error: "Unprocessable Entity" });
+    }
+
     const updatedUser = await User.findByIdAndUpdate(userId, data, {
       new: true,
     });

@@ -17,7 +17,7 @@ const loginUser = async (req, res) => {
     // If the user is registered, check the login credentials
     const isPasswordValid = await comparePassword(password, user?.password);
 
-    const { password: extractedPass, ...payload } = user;
+    const { password: extractedPass, ...payload } = user._doc;
 
     if (isPasswordValid) {
       const token = await generateToken(payload);
@@ -26,7 +26,7 @@ const loginUser = async (req, res) => {
         httpOnly: true,
       });
 
-      res.status(200).json({ token, payload });
+      res.status(200).json({ token, payload: payload });
     } else {
       res.status(401).json({ error: "Invalid Password" });
     }
