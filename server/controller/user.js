@@ -55,10 +55,19 @@ const createUser = async (req, res) => {
   }
 };
 
-// Get all users (without password and addresses)
+// Get all users (paginated, without password and addresses)
 const getUsers = async (req, res) => {
   try {
-    const users = await User.find().select("-password -addresses");
+    const page = parseInt(req.query?.page) || 1; // Current page, default to 1
+    const limit = parseInt(req.query?.limit) || 10; // Number of users per page, default to 10
+
+    const skip = (page - 1) * limit;
+
+    const users = await User.find()
+      .select("-password -addresses")
+      .skip(skip)
+      .limit(limit);
+
     res.status(200).json(users);
   } catch (error) {
     console.error("Error fetching users:", error);

@@ -6,23 +6,31 @@ import axios from "../axios";
 import { MyContext } from "../context/context";
 import toast from "react-hot-toast";
 import { BiEditAlt } from "react-icons/bi";
-import { AiFillDelete } from "react-icons/ai";
+import {
+  AiFillDelete,
+  AiOutlineArrowLeft,
+  AiOutlineArrowRight,
+} from "react-icons/ai";
 
 const Home = () => {
   const cellPadding = "10px"; // Adjust the padding value as needed\
   const { isLogin, loggedInUser, setAddUserButtonFlag, isDark } =
     useContext(MyContext);
 
-  console.log(loggedInUser, "logged in user");
   const [users, setUsers] = useState([]);
+  const [pageIndex, setPageIndex] = useState(1);
+  const [limit, setLimit] = useState(3);
 
   const navigate = useNavigate();
 
   const fetchUsers = async () => {
     try {
-      const { data } = await axios.get("/user", {
-        withCredentials: true,
-      });
+      const { data } = await axios.get(
+        `/user?page=${pageIndex}&limit=${limit}`,
+        {
+          withCredentials: true,
+        }
+      );
 
       setUsers(data);
     } catch (error) {
@@ -36,7 +44,7 @@ const Home = () => {
       navigate("/login");
     }
     fetchUsers();
-  }, [isLogin]);
+  }, [isLogin, pageIndex]);
 
   const handleDelete = async (item) => {
     try {
@@ -51,6 +59,18 @@ const Home = () => {
     } catch (error) {
       console.log(error);
       return toast.error("Something Went Wrong!");
+    }
+  };
+
+  const handleArrow = (event) => {
+    if (event === "increment") {
+      if (users?.length === limit) {
+        setPageIndex(pageIndex + 1);
+      }
+    } else if (event === "decrement") {
+      if (pageIndex !== 1) {
+        setPageIndex(pageIndex - 1);
+      }
     }
   };
 
@@ -81,9 +101,17 @@ const Home = () => {
         <Container
           p={"10px"}
           display={"flex"}
-          justifyContent={"center"}
+          justifyContent={"space-between"}
           alignItems={"center"}
         >
+          <AiOutlineArrowLeft
+            size={"40px"}
+            color="white"
+            cursor={"pointer"}
+            style={{ transition: "fill 0.4s" }}
+            className="arrows"
+            onClick={() => handleArrow("decrement")}
+          />
           <Table
             w={"70vw"}
             border={isDark ? "1px solid white" : "1px solid black"}
@@ -201,6 +229,14 @@ const Home = () => {
               {/* Add more rows as needed */}
             </Tbody>
           </Table>
+          <AiOutlineArrowRight
+            size={"40px"}
+            color="white"
+            cursor={"pointer"}
+            className="arrows"
+            style={{ transition: "fill 0.4s" }}
+            onClick={() => handleArrow("increment")}
+          />
         </Container>
       </Container>
     </Container>

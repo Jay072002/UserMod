@@ -107,3 +107,8 @@ body.dark .support a {
 .support a:hover {
   transform: scale(1.1);
 }
+
+.arrows:hover {
+  fill: black;
+  transition: "1s";
+}
