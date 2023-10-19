@@ -122,10 +122,11 @@ const UserAddress = ({ userId }) => {
   const handleUpdate = async (item) => {
     try {
       // {title: 'Accordian 2', street: '', city: '', state: 'afsa', zipCode: ''}
-      const { title, ...data } = item;
+      const { ...data } = item;
+      console.log(item, "item");
 
       if (userId) {
-        await axios.put(`/address/${item?._id}`, data, {
+        await axios.put(`/address/${item?._id}/${userId}`, data, {
           withCredentials: true,
         });
         return toast.success("Accordian Updated!");
@@ -139,7 +140,9 @@ const UserAddress = ({ userId }) => {
   const handleDelete = async (item) => {
     try {
       if (item?._id) {
-        await axios.delete(`/address/${item?._id}`, { withCredentials: true });
+        await axios.delete(`/address/${item?._id}/${userId}`, {
+          withCredentials: true,
+        });
         const updatedAccordionItems = accordionItems.filter(
           (accItem) => accItem._id !== item?._id
         );

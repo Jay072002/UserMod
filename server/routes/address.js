@@ -31,13 +31,17 @@ router.post(
 
 // update address (only admin and authorized user)
 router.put(
-  "/:addressId",
+  "/:addressId/:userId",
   validateUserData(updateAddressSchema),
   verifyTokenAndAuthorization,
   updateAddress
 );
 
 // delete address (only admin and authorized user)
-router.delete("/:addressId", verifyToken, deleteAddress);
+router.delete(
+  "/:addressId/:userId",
+  verifyTokenAndAuthorization,
+  deleteAddress
+);
 
 module.exports = router;

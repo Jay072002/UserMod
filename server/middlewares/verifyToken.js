@@ -27,7 +27,8 @@ const verifyToken = (req, res, next) => {
 function verifyTokenAndUser(req, res, next) {
   verifyToken(req, res, () => {
     const userId = req?.params?.userId; //params userId
-    const id = req.user.id; //the loggen in user id
+    const id = req.user?.id; //the loggen in user id
+
     if (userId && userId !== id) {
       return res.status(403).json({ message: "Token does not match the user" });
     }
@@ -52,10 +53,10 @@ function verifyTokenAndAdmin(req, res, next) {
 function verifyTokenAndAuthorization(req, res, next) {
   verifyToken(req, res, () => {
     const userId = req?.params?.userId; //params userId
-    const id = req?.user?.id; //the loggen in user id
+    const id = req?.user?._id; //the loggen in user id
 
     // allow admin and authorized user to access
-    if ((userId && userId !== id) || req?.user?.isAdmin) {
+    if ((userId && userId === id) || req?.user?.isAdmin) {
       next();
     } else {
       return res

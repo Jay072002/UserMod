@@ -37,6 +37,8 @@ const updateAddress = async (req, res) => {
     const { addressId } = req.params;
     const updatedAddress = req.body;
 
+    console.log(updatedAddress, "updatedAddedd");
+
     const address = await Address.findByIdAndUpdate(addressId, updatedAddress, {
       new: true,
     });
