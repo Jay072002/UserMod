@@ -2,11 +2,18 @@ import { Box, Button, Container } from "@chakra-ui/react";
 import Cookies from "js-cookie";
 import { useContext, useEffect } from "react";
 import { MyContext } from "../context/context";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 
 const Header = () => {
-  const { isLogin, setIsLogin, isDark, setIsDark } = useContext(MyContext);
+  const {
+    isLogin,
+    setIsLogin,
+    isDark,
+    setIsDark,
+    loggedInUser,
+    setLoggedInUser,
+  } = useContext(MyContext);
 
   const navigate = useNavigate();
 
@@ -14,11 +21,22 @@ const Header = () => {
     if (isLogin) {
       Cookies.remove("token");
       setIsLogin(false);
+      setLoggedInUser({
+        firstName: "",
+        lastName: "",
+        email: "",
+        phoneNumber: "",
+        isAdmin: "",
+      });
       return toast.success("Logout success");
     } else {
       navigate("/login");
     }
   };
+
+  const location = useLocation();
+
+  const { pathname } = location;
 
   useEffect(() => {
     // Check the user's preference for dark mode in local storage and update the checkbox accordingly
@@ -71,6 +89,37 @@ const Header = () => {
         >
           {isLogin ? "Logout" : "Login"}
         </Button>
+        {loggedInUser?._id && !pathname?.includes("update") ? (
+          <Button
+            mr={"20px"}
+            p={"5px 17px"}
+            cursor={"pointer"}
+            bg="transparent"
+            borderRadius={"12px"}
+            _hover={{ bg: "teal", transition: "0.3s" }}
+            fontSize={"16px"}
+            onClick={() => navigate(`/updateuserinfo/${loggedInUser._id}`)}
+            color={isDark ? "whitesmoke" : "black"}
+            fontWeight={"bold"}
+          >
+            view profile
+          </Button>
+        ) : (
+          <Button
+            mr={"20px"}
+            p={"5px 17px"}
+            cursor={"pointer"}
+            bg="transparent"
+            borderRadius={"12px"}
+            _hover={{ bg: "teal", transition: "0.3s" }}
+            fontSize={"16px"}
+            onClick={() => navigate(`/home`)}
+            color={isDark ? "whitesmoke" : "black"}
+            fontWeight={"bold"}
+          >
+            home
+          </Button>
+        )}
       </Container>
     </Box>
   );

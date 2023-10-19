@@ -11,6 +11,7 @@ import {
   AiOutlineArrowLeft,
   AiOutlineArrowRight,
 } from "react-icons/ai";
+import Cookies from "js-cookie";
 
 const Home = () => {
   const cellPadding = "10px";
@@ -21,6 +22,8 @@ const Home = () => {
     isDark,
     limit,
     setLimit,
+    setIsLogin,
+    setLoggedInUser,
   } = useContext(MyContext);
 
   const [users, setUsers] = useState([]);
@@ -59,9 +62,24 @@ const Home = () => {
     try {
       await axios.delete(`/user/${item._id}`, { withCredentials: true });
 
-      setUsers((prevUsers) =>
-        prevUsers.filter((user) => user._id !== item._id)
-      );
+      if (loggedInUser.isAdmin) {
+        fetchUsers();
+      } else {
+        Cookies.remove("token");
+        setIsLogin(false);
+        setLoggedInUser({
+          firstName: "",
+          lastName: "",
+          email: "",
+          phoneNumber: "",
+          isAdmin: "",
+        });
+        navigate("/login");
+      }
+
+      // setUsers((prevUsers) =>
+      //   prevUsers.filter((user) => user._id !== item._id)
+      // );
       toast.success("User Deleted!");
     } catch (error) {
       console.log(error);
@@ -116,6 +134,7 @@ const Home = () => {
           onChange={handleSelect}
           p={"10px"}
           fontWeight={"bold"}
+          size="md"
         >
           <option value="1">1</option>
           <option value="3">3</option>
@@ -139,6 +158,7 @@ const Home = () => {
             className="arrows"
             onClick={() => handleArrow("decrement")}
           />
+
           <Table
             w={"70vw"}
             border={isDark ? "1px solid white" : "1px solid black"}
@@ -179,7 +199,10 @@ const Home = () => {
             </Thead>
             <Tbody>
               {users?.map((item, index) => (
-                <Tr key={item?._id}>
+                <Tr
+                  key={item?._id}
+                  bg={item?._id == loggedInUser?._id ? "grey" : null}
+                >
                   <Td
                     borderRight={isDark ? "1px solid white" : "1px solid black"}
                     padding={cellPadding}

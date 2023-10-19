@@ -4,7 +4,8 @@ const express = require("express");
 const cookieParser = require("cookie-parser");
 const connect = require("./db/connect");
 const router = require("./routes/index");
-const seeder = require("./seeder");
+const adminSeeder = require("./utils/helpers/adminSeeder");
+const userSeeder = require("./utils/helpers/userSeeder");
 
 const app = express();
 
@@ -32,7 +33,8 @@ app.use("/api/v1", router);
     console.log("MONGODB CONNECTED!!");
 
     // create a seeder function that trigger before starting the server and create a admin user
-    await seeder();
+    await adminSeeder();
+    await userSeeder();
 
     app.listen(PORT, () => {
       console.log(`SERVER IS UP AND RUNNING ON ${PORT}`);

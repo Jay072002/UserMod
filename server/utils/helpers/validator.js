@@ -5,7 +5,7 @@ const Joi = require("joi");
 const loginUserSchema = Joi.object({
   email: Joi.string().email().required(),
   password: Joi.string()
-    .pattern(new RegExp("^[a-zA-Z0-9@_]{8,20}$"))
+    .pattern(new RegExp("^[a-zA-Z0-9@_()]{8,20}$"))
     .required(),
 });
 
@@ -16,7 +16,7 @@ const createUserSchema = Joi.object({
   email: Joi.string().email().required(),
   phoneNumber: Joi.string().pattern(new RegExp("^[0-9]{10}$")),
   password: Joi.string()
-    .pattern(new RegExp("^[a-zA-Z0-9@_]{8,20}$"))
+    .pattern(new RegExp("^[a-zA-Z0-9@_()]{8,20}$"))
     .required(),
   addresses: Joi.array().items(
     Joi.object({

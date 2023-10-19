@@ -1,10 +1,10 @@
-const { hashPassword } = require("./utils/helpers/bcrypt");
-const { generateToken } = require("./utils/helpers/jwt");
-const { ADMIN_EMAIL, ADMIN_PASSWORD } = require("./utils/constants/constants");
-const User = require("./models/User");
+const { hashPassword } = require("./bcrypt");
+const { generateToken } = require("./jwt");
+const { ADMIN_EMAIL, ADMIN_PASSWORD } = require("../constants/constants");
+const User = require("../../models/User");
 
 // create a admin user
-const seeder = async () => {
+const adminSeeder = async () => {
   // create a seeder user and assign a token when server starts
 
   try {
@@ -28,11 +28,11 @@ const seeder = async () => {
 
     await User.create(seederUser);
 
-    console.log("admin account created");
+    console.log("ADMIN ACCOUNT CREATED");
   } catch (error) {
     console.log("Error While Creating Seeder User", error);
     throw new Error("Error While Creating Seeder User");
   }
 };
 
-module.exports = seeder;
+module.exports = adminSeeder;
