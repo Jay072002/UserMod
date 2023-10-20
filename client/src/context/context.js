@@ -28,7 +28,7 @@ export const MyContextProvider = ({ children }) => {
 
   const [isDark, setIsDark] = useState(false);
 
-  const [limit, setLimit] = useState(3);
+  const [limit, setLimit] = useState(10);
 
   return (
     <MyContext.Provider
