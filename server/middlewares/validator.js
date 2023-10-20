@@ -2,7 +2,7 @@
 const validateUserData = (schema) => {
   return (req, res, next) => {
     const { error, value } = schema.validate(req.body, { stripUnknown: true });
-    console.log(req.body);
+
     if (error) {
       console.log(error);
       return res
